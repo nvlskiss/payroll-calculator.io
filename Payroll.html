@@ -1,0 +1,357 @@
+<html>
+  <head>
+    <title>Payroll System</title>
+    <style>
+      @font-face{
+        font-family: "Custom Black";
+        src: url("Fonts/TT Rounds Neue Trial Black.ttf");
+      }
+      @font-face{
+        font-family: "Custom Demibold";
+        src: url("Fonts/TT Rounds Neue Trial DemiBold.ttf");
+      }
+      *{
+        box-sizing: border-box;
+        font-size: 1.2vw;
+        font-family: Custom Demibold;
+      }
+      .mother{
+        width: 50%;   
+        height: 60vh;
+        padding: 0.3%;        
+        float: left;  
+      }
+      .mother2{
+        width: 100%;   
+        padding: 0.3%;       
+      }
+      .header{
+        background-color: #A37BB7;
+        text-align: center;
+        padding: 0.1%;
+      }
+      .container1{
+        background-color: #C1A7CE;
+        border-radius: 10px;
+        padding: 10px;
+        width: 100%;  
+      }
+      .container2{
+        background-color: #C1A7CE;
+        border-radius: 10px;
+        padding: 10px;
+        width: calc(100% - 0.5vw);  
+      }
+      .table{
+        background-color: #FCF7FE;
+        width: 100%;
+        border: 0.2vw solid #FCF7FE;
+        border-radius: 5px;
+      }
+      .th{
+        background-color: #A37BB7;
+        color: #FCF7FE;
+        font-family: Custom Black;
+        font-size: 1.5rem;
+        letter-spacing: 0.1rem;
+      }
+      .th2{
+        color: #FCF7FE;
+        font-family: Custom Black;
+        font-size: 1.5rem;
+      }
+      .required{
+        color: #6F082C;
+        font-family: Custom Black;
+        font-size: 1.5rem;
+      }
+      .disabled{
+        border: 0px;
+        background-color: #FCF7FE;   
+        padding: 0px;
+      }
+      td{
+        padding: 0.8%;  
+        height: 1%;
+        overflow: hidden;
+      }
+      body{
+        margin: 0px;
+      }
+      h1{
+        color: #FCF7FE;
+        font-family: Custom Black;
+        font-size: 2rem;
+        letter-spacing: 0.1rem;
+      }
+      input[type="text"], input[type="number"], select{
+        width: 100%;       
+      }
+      input[type="button"]{
+        color:#FCF7FE;
+        font-family: Custom Black;
+        font-size: 1.5rem;
+        letter-spacing: 0.1rem;
+        background-color: #753CC0;
+        border-radius: 10px;
+        border: 1px solid;
+        padding: 1.5%;
+        transition: 0.4s;
+      }
+      input[type="button"]:hover{
+        background-color: #A37BB7;
+      }
+    </style>
+  </head>
+  <body>
+    <script language="javascript">
+      var rate = 300;
+      var bonus, grossPay, totalGrossPay, SSS, Tax, Pagibig, totalDeductions, netPay;
+    
+      function empty(){
+        var reset = confirm("Are you sure you want to create a new payslip?");
+        if(reset == true){
+            payroll.empID.value = "";
+            payroll.fn.value = "";
+            payroll.ln.value = "";
+            payroll.hours.value = "";
+            payroll.rec.value = "";
+            payroll.postot.value = "0.00";
+            payroll.bontot.value = "0.00";
+            payroll.ibig.value = "0.00";
+            payroll.sss.value = "0.00";
+            payroll.tax.value = "0.00";
+            payroll.tgp.value = "0.00";
+            payroll.td.value = "0.00";
+            payroll.np.value = "0.00";
+        }
+      }
+    
+      function changePosition(){
+        var position = document.getElementById("position").value;
+        rate = 300;
+        if(position == "emp"){
+          rate = 300;
+          payroll.pos.value = "Employee";
+        }
+        else if(position == "sup"){
+          rate = 500;
+          payroll.pos.value = "Supervisor";           
+        }
+        else if(position == "man"){
+          rate = 700;          
+          payroll.pos.value = "Manager";
+        }
+        payroll.rate.value = parseFloat(rate).toFixed(2);
+      }
+    
+      function generate(){
+        if(((payroll.hours.value == null) || (payroll.hours.value == "")) || ((payroll.empID.value == null) || (payroll.empID.value == ""))|| (payroll.fn.value == "") || (payroll.ln.value == "")){
+          alert("Please input all required fields.");
+        }
+        else{
+          grossPay = rate * payroll.hours.value;
+          payroll.postot.value = parseFloat(grossPay).toFixed(2);
+          
+          if((grossPay >= 0) && (grossPay <= 2999)){
+            bonus = 0;
+          }
+          else if((grossPay >= 3000) && (grossPay <= 4999)){
+            bonus = grossPay * .15;  
+          }
+          else if((grossPay >= 5000) && (grossPay <= 9999)){
+            bonus = grossPay * .20;  
+          }
+          else if((grossPay >= 10000) && (grossPay <= 14999)){
+            bonus = grossPay * .25;  
+          }
+          else if(grossPay >= 15000){
+            bonus = grossPay * .30;  
+          }
+          else{
+            alert("Error in entered work hours. Please only use positive integers.");  
+          }
+          payroll.bontot.value = parseFloat(bonus).toFixed(2);
+            
+          SSS = grossPay * .03;
+          payroll.sss.value = parseFloat(SSS).toFixed(2);
+            
+          Pagibig = grossPay * .10;
+          payroll.ibig.value = parseFloat(Pagibig).toFixed(2);
+            
+          if((grossPay >= 0) && (grossPay <= 1999)){
+            Tax = 0;
+          }
+          else if((grossPay >= 2000) && (grossPay <= 3999)){
+            Tax = grossPay * .18;  
+          }
+          else if((grossPay >= 4000) && (grossPay <= 7999)){
+            Tax = grossPay * .23;  
+          }
+          else if((grossPay >= 8000) && (grossPay <= 14999)){
+            Tax = grossPay * .25;  
+          }
+          else if(grossPay >= 15000){
+            Tax = grossPay * .30;  
+          }
+          else{
+            alert("Error in entered work hours. Please only use positive integers.");  
+          }
+          payroll.tax.value = parseFloat(Tax).toFixed(2);
+          
+          totalGrossPay = grossPay + bonus;
+          totalDeductions = SSS + Pagibig + Tax;
+          netPay = totalGrossPay - totalDeductions;
+          payroll.tgp.value = parseFloat(totalGrossPay).toFixed(2);
+          payroll.td.value = parseFloat(totalDeductions).toFixed(2);
+          payroll.np.value = parseFloat(netPay).toFixed(2);
+          payroll.rec.value = payroll.fn.value + " " + payroll.ln.value;
+        }
+      }
+    </script>
+
+    <div class="header">
+      <h1>Payroll Form</h1>
+    </div>
+
+    <form name="payroll" style="margin: 1%;">
+      <div class="mother2">
+        <div class="container1">
+          <table width="100%">
+            <tr>
+              <td width="25%" class="th2">Employee ID<font class="required">*</font></td>
+              <td width="25%" class="th2">First Name<font class="required">*</font></td>
+              <td width="25%" class="th2">Last Name<font class="required">*</font></td>
+              <td width="25%" class="th2">Position<font class="required">*</font></td>
+            </tr>
+            <tr>
+              <td><input type="number" name="empID" required></td>
+              <td><input type="text" name="fn" required></td>
+              <td><input type="text" name="ln" required></td>
+              <td>
+                <select name="position" id="position" onchange="changePosition()">
+                  <option value="emp">Employee</option>
+                  <option value="sup">Supervisor</option>
+                  <option value="man">Manager</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="mother">
+        <div class="container2">
+          <table class="table">
+            <tr>
+              <td width="40%" class="th">Earnings</td>
+              <td width="20%" class="th">Rate</td>
+              <td width="20%" class="th">Hours<font class="required">*</font></td>
+              <td width="20%" class="th">Total</td>
+            </tr>
+            <tr>
+              <td><input type="text" value="Employee" name="pos" class="disabled" readonly></td>
+              <td><input type="number" value="300.00" step=".01" min="0" name="rate" class="disabled" readonly></td>
+              <td><input type="number" min="0" name="hours" required></td>
+              <td><input type="number" value="0.00" step=".01" min="0" name="postot" class="disabled" readonly></td>
+            </tr>
+            <tr>
+              <td>Bonus</td>
+              <td><center>-</center></td>
+              <td><center>-</center></td>
+              <td><input type="number" value="0.00" step=".01" min="0" name="bontot" class="disabled" readonly></td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+          </table>
+        </div>
+
+        <br>
+        
+        <div class="container2">
+          <table width="100%" height="19.3%">
+            <tr>
+              <td><center>Nichole Velasquez</center></td>
+              <td><center><input type="text" name="rec" class="disabled" style="background-color: #C1A7CE; text-align: center;" readonly></center></td>
+            </tr>
+            <tr>
+              <td width="50%" class="th2"><center>Approved by:</center></td>
+              <td width="50%" class="th2"><center>Received by:</center></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="mother">
+        <div class="container2">
+          <table class="table">
+            <tr>
+              <td width="50%" class="th">Deductions</td>
+              <td width="50%" class="th">Total</td>
+            </tr>
+            <tr>
+              <td>Social Security System</td>
+              <td><input type="number" value="0.00" step="0.01" min="0" name="sss" class="disabled" readonly></td>
+            </tr>
+            <tr>
+              <td>Pagibig</td>
+              <td><input type="number" value="0.00" step="0.01" min="0" name="ibig" class="disabled" readonly></td>
+            </tr>
+            <tr>
+              <td>Tax</td>
+              <td><input type="number" value="0.00" step="0.01" min="0" name="tax" class="disabled" readonly></td>
+            </tr>
+          </table>
+        </div>
+
+        <br>
+
+        <div class="container2">
+          <table class="table">
+            <tr>
+              <td width="50%" class="th"></td>
+              <td width="50%" class="th">Current</td>
+            </tr>
+            <tr>
+              <td class="th">Total Gross Pay</td>
+              <td><input type="number" value="0.00" step=".01" min="0" name="tgp" class="disabled" readonly></td>
+            </tr>
+            <tr>
+              <td class="th">Total Deductions</td>
+              <td><input type="number" value="0.00" step=".01" min="0" name="td" class="disabled" readonly></td>
+            </tr>
+            <tr>
+              <td class="th">Net Pay</td>
+              <td><input type="number" value="0.00" step=".01" min="0" name="np" class="disabled" readonly></td>
+            </tr>
+          </table>
+
+          <br>
+
+          <div>
+            <input type="button" value="New" name="new" onclick="empty()">
+            <input type="button" value="Generate Payslip" name="gen" onclick="generate()">
+          </div>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>
